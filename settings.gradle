@@ -1,0 +1,2 @@
+include ':app', ':printer', ':BrotherPrintLibrary'
+rootProject.name='BrotherPrinterSample'
