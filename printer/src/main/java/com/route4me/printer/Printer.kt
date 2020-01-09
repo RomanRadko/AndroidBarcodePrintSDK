@@ -20,9 +20,9 @@ class BarPrinter(private val filePath: String) {
         val printInfo = PrinterInfo()
         printInfo.printerModel = PrinterInfo.Model.RJ_3150
         printInfo.port = PrinterInfo.Port.BLUETOOTH
+        printInfo.customPaper = "$externalStorageDir/Download/rj3150_76mm.bin"
         //TODO: hardcoded values
-        printInfo.customPaper = "$externalStorageDir/rj3150_76mm.bin"
-        printInfo.macAddress = "00:11:EE:BB:AA:CC"
+        printInfo.macAddress = "F4:CB:52:58:84:AE"
         printer.printerInfo = printInfo
         // Pass Bluetooth adapter to the library (Bluetooth only)
         val bluetoothAdapter = BluetoothAdapter.getDefaultAdapter()
