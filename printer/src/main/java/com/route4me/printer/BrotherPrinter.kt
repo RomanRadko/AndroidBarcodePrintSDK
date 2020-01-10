@@ -7,10 +7,10 @@ import com.brother.ptouch.sdk.PrinterStatus
 import android.bluetooth.BluetoothAdapter
 import android.os.Environment
 
-class BarPrinter(private val filePath: String) {
+class BrotherPrinter(private val filePath: String) {
 
-    companion object : SingletonHolder<BarPrinter, String>({
-        BarPrinter(it)
+    companion object : SingletonHolder<BrotherPrinter, String>({
+        BrotherPrinter(it)
     })
 
     fun print(): PrinterStatus {
