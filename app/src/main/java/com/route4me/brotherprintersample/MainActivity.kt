@@ -2,9 +2,12 @@ package com.route4me.brotherprintersample
 
 import android.annotation.SuppressLint
 import android.content.Intent
+import android.os.Build
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.preference.PreferenceManager
 import android.widget.Toast
+import androidx.annotation.RequiresApi
 import com.route4me.printer.BrotherPrinter
 import com.route4me.printer.ZebraPrinter
 import io.reactivex.Single
@@ -20,6 +23,16 @@ class MainActivity : AppCompatActivity() {
         testBrotherBtn.setOnClickListener { printBrother() }
         testZebraBtn.setOnClickListener { printZebra() }
         connectDeviceBtn.setOnClickListener { startActivity(Intent(this, SearchBTPrinterActivity::class.java)) }
+    }
+
+    @RequiresApi(Build.VERSION_CODES.N)
+    override fun onResume() {
+        super.onResume()
+        val selectedPrinterName = PreferenceManager.getDefaultSharedPreferences(this)
+            .getString(SearchBTPrinterActivity.PRINTER_MODEL_KEY, "")
+        if (selectedPrinterName!!.isEmpty()) {
+            btDeviceName.text = selectedPrinterName
+        }
     }
 
     @SuppressLint("CheckResult")

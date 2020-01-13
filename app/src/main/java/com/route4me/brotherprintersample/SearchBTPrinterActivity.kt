@@ -110,6 +110,7 @@ class SearchBTPrinterActivity : ListActivity() {
             editor.putString(MAC_ADDRESS_KEY, mBluetoothPrinter[position].macAddress)
             editor.putString(PRINTER_MODEL_KEY, mBluetoothPrinter[position].modelName)
             editor.apply()
+            editor.commit()
 
         }
         finish()
