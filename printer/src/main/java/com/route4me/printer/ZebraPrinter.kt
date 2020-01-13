@@ -12,9 +12,9 @@ class ZebraPrinter (private val barcodeStr: String) {
         ZebraPrinter(it)
     })
 
-    fun print() {
+    fun print(macAddress: String?) {
         try { // Instantiate insecure connection for given Bluetooth&reg; MAC Address.
-            val thePrinterConn: Connection = BluetoothConnectionInsecure("F4:CB:52:58:84:AE")
+            val thePrinterConn: Connection = BluetoothConnectionInsecure(macAddress)
             // Initialize
             Looper.prepare()
             // Open the connection - physical connection is established here.

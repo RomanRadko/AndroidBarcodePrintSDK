@@ -13,7 +13,7 @@ class BrotherPrinter(private val filePath: String) {
         BrotherPrinter(it)
     })
 
-    fun print(): PrinterStatus {
+    fun print(macAddress: String?): PrinterStatus {
         val externalStorageDir = Environment.getExternalStorageDirectory().toString()
         // define printer and printer setting information
         val printer = Printer()
@@ -22,7 +22,7 @@ class BrotherPrinter(private val filePath: String) {
         printInfo.port = PrinterInfo.Port.BLUETOOTH
         printInfo.customPaper = "$externalStorageDir/Download/rj3150_76mm.bin"
         //TODO: hardcoded values
-        printInfo.macAddress = "F4:CB:52:58:84:AE"
+        printInfo.macAddress = macAddress
         printer.printerInfo = printInfo
         // Pass Bluetooth adapter to the library (Bluetooth only)
         val bluetoothAdapter = BluetoothAdapter.getDefaultAdapter()

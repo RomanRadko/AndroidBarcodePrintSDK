@@ -17,27 +17,34 @@ import kotlinx.android.synthetic.main.activity_main.*
 
 class MainActivity : AppCompatActivity() {
 
+    private var selectedPrinterName: String? = ""
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
         testBrotherBtn.setOnClickListener { printBrother() }
         testZebraBtn.setOnClickListener { printZebra() }
-        connectDeviceBtn.setOnClickListener { startActivity(Intent(this, SearchBTPrinterActivity::class.java)) }
+        connectDeviceBtn.setOnClickListener {
+            startActivity(
+                Intent(
+                    this,
+                    SearchBTPrinterActivity::class.java
+                )
+            )
+        }
     }
 
     @RequiresApi(Build.VERSION_CODES.N)
     override fun onResume() {
         super.onResume()
-        val selectedPrinterName = PreferenceManager.getDefaultSharedPreferences(this)
-            .getString(SearchBTPrinterActivity.PRINTER_MODEL_KEY, "")
-        if (selectedPrinterName!!.isEmpty()) {
-            btDeviceName.text = selectedPrinterName
-        }
+        selectedPrinterName = PreferenceManager.getDefaultSharedPreferences(this)
+            .getString(SearchBTPrinterActivity.MAC_ADDRESS_KEY, "")
+        btDeviceName.text = selectedPrinterName
     }
 
     @SuppressLint("CheckResult")
     private fun printZebra() {
-        Single.fromCallable { ZebraPrinter.getInstance("91234567891").print() }
+        Single.fromCallable { ZebraPrinter.getInstance("91234567891").print(selectedPrinterName) }
             .subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe(
@@ -57,7 +64,10 @@ class MainActivity : AppCompatActivity() {
 
     @SuppressLint("CheckResult")
     private fun printBrother() {
-        Single.fromCallable { BrotherPrinter.getInstance("/storage/emulated/0/Download/test.jpg").print() }
+        Single.fromCallable {
+            BrotherPrinter.getInstance("/storage/emulated/0/Download/test.jpg")
+                .print(selectedPrinterName)
+        }
             .subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe(
