@@ -1,6 +1,7 @@
 package com.route4me.brotherprintersample
 
 import android.annotation.SuppressLint
+import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.widget.Toast
@@ -18,6 +19,7 @@ class MainActivity : AppCompatActivity() {
         setContentView(R.layout.activity_main)
         testBrotherBtn.setOnClickListener { printBrother() }
         testZebraBtn.setOnClickListener { printZebra() }
+        connectDeviceBtn.setOnClickListener { startActivity(Intent(this, SearchBTPrinterActivity::class.java)) }
     }
 
     @SuppressLint("CheckResult")
