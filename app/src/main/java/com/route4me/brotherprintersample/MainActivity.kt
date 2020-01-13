@@ -3,11 +3,16 @@ package com.route4me.brotherprintersample
 import android.annotation.SuppressLint
 import android.content.Intent
 import android.os.Build
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.preference.PreferenceManager
 import android.widget.Toast
 import androidx.annotation.RequiresApi
+import androidx.appcompat.app.AppCompatActivity
+import com.google.zxing.BarcodeFormat
+import com.google.zxing.MultiFormatWriter
+import com.google.zxing.WriterException
+import com.google.zxing.common.BitMatrix
+import com.journeyapps.barcodescanner.BarcodeEncoder
 import com.route4me.printer.BrotherPrinter
 import com.route4me.printer.ZebraPrinter
 import io.reactivex.Single
@@ -32,6 +37,7 @@ class MainActivity : AppCompatActivity() {
                 )
             )
         }
+        generateBarcode(barcodeCode.text.toString())
     }
 
     @RequiresApi(Build.VERSION_CODES.N)
@@ -44,7 +50,9 @@ class MainActivity : AppCompatActivity() {
 
     @SuppressLint("CheckResult")
     private fun printZebra() {
-        Single.fromCallable { ZebraPrinter.getInstance("91234567891").print(selectedPrinterName) }
+        Single.fromCallable {
+            ZebraPrinter.getInstance(barcodeCode.text.toString()).print(selectedPrinterName)
+        }
             .subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe(
@@ -83,5 +91,18 @@ class MainActivity : AppCompatActivity() {
                     Toast.makeText(this, "Failed to print.$it", Toast.LENGTH_LONG)
                         .show()
                 })
+    }
+
+    private fun generateBarcode(input: String) {
+        val multiFormatWriter = MultiFormatWriter()
+        try {
+            val bitMatrix: BitMatrix =
+                multiFormatWriter.encode(input, BarcodeFormat.CODABAR, 800, 200)
+            val barcodeEncoder = BarcodeEncoder()
+            val bitmap = barcodeEncoder.createBitmap(bitMatrix)
+            barcodeView.setImageBitmap(bitmap)
+        } catch (e: WriterException) {
+            e.printStackTrace()
+        }
     }
 }

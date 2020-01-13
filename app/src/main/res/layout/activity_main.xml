@@ -25,6 +25,18 @@
 
     </LinearLayout>
 
+    <EditText
+        android:layout_gravity="center"
+        android:id="@+id/barcodeCode"
+        android:text="@string/barcode_input"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"/>
+
+    <ImageView
+        android:id="@+id/barcodeView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"/>
+
     <Button
         android:id="@+id/connectDeviceBtn"
         android:layout_width="match_parent"

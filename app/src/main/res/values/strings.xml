@@ -8,4 +8,5 @@
     <string name="button_refresh">Refresh</string>
     <string name="no_bluetooth_device">No Devices</string>
     <string name="not_connected">Not connected</string>
+    <string name="barcode_input">123456789</string>
 </resources>
