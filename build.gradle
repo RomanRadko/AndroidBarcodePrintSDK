@@ -19,7 +19,10 @@ allprojects {
     repositories {
         google()
         jcenter()
-
+        flatDir {
+            dirs 'libs'
+            dirs project(':printer').file('libs')
+        }
     }
 }
 

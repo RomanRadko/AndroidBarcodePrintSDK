@@ -7,6 +7,7 @@ import android.annotation.TargetApi
 import android.app.ListActivity
 import android.bluetooth.BluetoothAdapter
 import android.bluetooth.BluetoothDevice
+import android.content.Context
 import android.content.Intent
 import android.content.SharedPreferences
 import android.os.Build
@@ -17,13 +18,14 @@ import android.view.View
 import android.widget.ArrayAdapter
 import android.widget.Button
 import android.widget.ListView
-import com.brother.ptouch.sdk.NetPrinter
 import java.util.*
 
 class SearchBTPrinterActivity : ListActivity() {
 
-    private var mBluetoothPrinter: MutableList<NetPrinter> = mutableListOf() // list of storing Printer information
-    private var mItems: ArrayList<String> = arrayListOf()// List of storing the printer's information
+    private var mBluetoothPrinter: MutableList<BTPrinter> =
+        mutableListOf() // list of storing Printer information
+    private var mItems: ArrayList<String> =
+        arrayListOf()// List of storing the printer's information
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -59,9 +61,7 @@ class SearchBTPrinterActivity : ListActivity() {
                     var strDev = ""
                     strDev += device.name + "\n" + device.address
                     mItems.add(strDev)
-                    val printer = NetPrinter()
-                    printer.ipAddress = ""
-                    printer.macAddress = device.address
+                    val printer = BTPrinter("", device.address, device.name)
                     mBluetoothPrinter.add(printer)
                 }
             } else {
@@ -105,7 +105,7 @@ class SearchBTPrinterActivity : ListActivity() {
         val item = listAdapter.getItem(position) as String
         if (!item.equals(getString(R.string.no_bluetooth_device), ignoreCase = true)) {
             val editor: SharedPreferences.Editor =
-                PreferenceManager.getDefaultSharedPreferences(this).edit()
+                applicationContext.getSharedPreferences(PREFS, Context.MODE_PRIVATE).edit()
             editor.putString(IP_ADDRESS_KEY, mBluetoothPrinter[position].ipAddress)
             editor.putString(MAC_ADDRESS_KEY, mBluetoothPrinter[position].macAddress)
             editor.putString(PRINTER_MODEL_KEY, mBluetoothPrinter[position].modelName)
@@ -116,9 +116,11 @@ class SearchBTPrinterActivity : ListActivity() {
         finish()
     }
 
+    data class BTPrinter(val ipAddress: String, val macAddress: String, val modelName: String)
+
     companion object {
-        const val  IP_ADDRESS_KEY: String = "IP_ADDRESS_KEY"
-        const val  MAC_ADDRESS_KEY: String = "MAC_ADDRESS_KEY"
-        const val  PRINTER_MODEL_KEY: String = "PRINTER_MODEL_KEY"
+        const val IP_ADDRESS_KEY: String = "IP_ADDRESS_KEY"
+        const val MAC_ADDRESS_KEY: String = "MAC_ADDRESS_KEY"
+        const val PRINTER_MODEL_KEY: String = "PRINTER_MODEL_KEY"
     }
 }

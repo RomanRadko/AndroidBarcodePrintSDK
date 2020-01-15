@@ -1,18 +1,11 @@
 package com.route4me.brotherprintersample
 
 import android.annotation.SuppressLint
+import android.content.Context
 import android.content.Intent
-import android.os.Build
 import android.os.Bundle
-import android.preference.PreferenceManager
 import android.widget.Toast
-import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
-import com.google.zxing.BarcodeFormat
-import com.google.zxing.MultiFormatWriter
-import com.google.zxing.WriterException
-import com.google.zxing.common.BitMatrix
-import com.journeyapps.barcodescanner.BarcodeEncoder
 import com.route4me.printer.BrotherPrinter
 import com.route4me.printer.ZebraPrinter
 import io.reactivex.Single
@@ -20,9 +13,14 @@ import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
 import kotlinx.android.synthetic.main.activity_main.*
 
+const val PREFS = "PREFS"
+
 class MainActivity : AppCompatActivity() {
 
-    private var selectedPrinterName: String? = ""
+    private val selectedPrinterMacAddress: String?
+        get() = applicationContext.getSharedPreferences(PREFS, Context.MODE_PRIVATE)
+            .getString(SearchBTPrinterActivity.MAC_ADDRESS_KEY, null)
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -37,21 +35,18 @@ class MainActivity : AppCompatActivity() {
                 )
             )
         }
-        generateBarcode(barcodeCode.text.toString())
-    }
-
-    @RequiresApi(Build.VERSION_CODES.N)
-    override fun onResume() {
-        super.onResume()
-        selectedPrinterName = PreferenceManager.getDefaultSharedPreferences(this)
-            .getString(SearchBTPrinterActivity.MAC_ADDRESS_KEY, "")
-        btDeviceName.text = selectedPrinterName
+        btDeviceName.text = selectedPrinterMacAddress
     }
 
     @SuppressLint("CheckResult")
     private fun printZebra() {
+        if (selectedPrinterMacAddress.isNullOrBlank()) {
+            Toast.makeText(this, "No BT Printers are selected.", Toast.LENGTH_LONG)
+                .show()
+            return
+        }
         Single.fromCallable {
-            ZebraPrinter.getInstance(barcodeCode.text.toString()).print(selectedPrinterName)
+            ZebraPrinter.getInstance(barcodeCode.text.toString()).print(selectedPrinterMacAddress!!)
         }
             .subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())
@@ -72,9 +67,14 @@ class MainActivity : AppCompatActivity() {
 
     @SuppressLint("CheckResult")
     private fun printBrother() {
+        if (selectedPrinterMacAddress.isNullOrBlank()) {
+            Toast.makeText(this, "No BT Printers are selected.", Toast.LENGTH_LONG)
+                .show()
+            return
+        }
         Single.fromCallable {
-            BrotherPrinter.getInstance("/storage/emulated/0/Download/test.jpg")
-                .print(selectedPrinterName)
+            BrotherPrinter.getInstance(barcodeCode.text.toString())
+                .print(selectedPrinterMacAddress!!)
         }
             .subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())
@@ -82,7 +82,7 @@ class MainActivity : AppCompatActivity() {
                 {
                     Toast.makeText(
                         this,
-                        "Print success, status : $it",
+                        "Print was successful : $it",
                         Toast.LENGTH_LONG
                     )
                         .show()
@@ -93,16 +93,4 @@ class MainActivity : AppCompatActivity() {
                 })
     }
 
-    private fun generateBarcode(input: String) {
-        val multiFormatWriter = MultiFormatWriter()
-        try {
-            val bitMatrix: BitMatrix =
-                multiFormatWriter.encode(input, BarcodeFormat.CODABAR, 800, 200)
-            val barcodeEncoder = BarcodeEncoder()
-            val bitmap = barcodeEncoder.createBitmap(bitMatrix)
-            barcodeView.setImageBitmap(bitmap)
-        } catch (e: WriterException) {
-            e.printStackTrace()
-        }
-    }
 }
