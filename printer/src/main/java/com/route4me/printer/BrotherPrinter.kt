@@ -13,6 +13,7 @@ import com.journeyapps.barcodescanner.BarcodeEncoder
 import com.route4me.printer.model.SingletonHolder
 
 private const val TAG = "BrotherPrinter"
+
 class BrotherPrinter(private val barcodeValue: String) {
 
     companion object : SingletonHolder<BrotherPrinter, String>({
@@ -26,6 +27,7 @@ class BrotherPrinter(private val barcodeValue: String) {
             printerInfo = PrinterInfo().apply {
                 printerModel = PrinterInfo.Model.RJ_3150
                 port = PrinterInfo.Port.BLUETOOTH
+                //TODO:need to be stored in the raw resources
                 customPaper = "$externalStorageDir/Download/rj3150_76mm.bin"
                 this.macAddress = macAddress
             }
@@ -38,7 +40,7 @@ class BrotherPrinter(private val barcodeValue: String) {
         try {
             //print
             printer.startCommunication()
-            // Brother SDK accepts only images files, so barcode to image conversion should be performed
+            // Brother SDK accepts bitmap as input so barcode to bitmap conversion should be performed
             val bitmap = generateBarcodeBitmap(barcodeValue) ?: return false
             val status = printer.printImage(bitmap)
             return status.errorCode == PrinterInfo.ErrorCode.ERROR_NONE
