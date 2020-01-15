@@ -74,7 +74,7 @@ class MainActivity : AppCompatActivity() {
         }
         Single.fromCallable {
             BrotherPrinter.getInstance(barcodeCode.text.toString())
-                .print(selectedPrinterMacAddress!!)
+                .print(this, selectedPrinterMacAddress!!)
         }
             .subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())
