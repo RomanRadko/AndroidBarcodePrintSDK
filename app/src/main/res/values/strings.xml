@@ -9,4 +9,6 @@
     <string name="no_bluetooth_device">No Devices</string>
     <string name="not_connected">Not connected</string>
     <string name="barcode_input">123456789</string>
+    <string name="brother_log_output">Brother Log output:</string>
+    <string name="clear">Clear</string>
 </resources>

@@ -4,6 +4,8 @@ import android.annotation.SuppressLint
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
+import android.text.method.ScrollingMovementMethod
+import android.view.View
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.route4me.printer.BrotherPrinter
@@ -12,6 +14,7 @@ import io.reactivex.Single
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
 import kotlinx.android.synthetic.main.activity_main.*
+
 
 const val PREFS = "PREFS"
 
@@ -36,6 +39,8 @@ class MainActivity : AppCompatActivity() {
             )
         }
         btDeviceName.text = selectedPrinterMacAddress
+        logOutput.movementMethod = ScrollingMovementMethod()
+        clearLogBtn.setOnClickListener { logOutput.text = "" }
     }
 
     @SuppressLint("CheckResult")
@@ -45,6 +50,7 @@ class MainActivity : AppCompatActivity() {
                 .show()
             return
         }
+        progressBar.visibility = View.VISIBLE
         Single.fromCallable {
             ZebraPrinter.getInstance(barcodeCode.text.toString()).print(selectedPrinterMacAddress!!)
         }
@@ -52,6 +58,7 @@ class MainActivity : AppCompatActivity() {
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe(
                 {
+                    progressBar.visibility = View.GONE
                     Toast.makeText(
                         this,
                         "Print success, status : $it",
@@ -60,6 +67,7 @@ class MainActivity : AppCompatActivity() {
                         .show()
                 },
                 {
+                    progressBar.visibility = View.GONE
                     Toast.makeText(this, "Failed to print.$it", Toast.LENGTH_LONG)
                         .show()
                 })
@@ -72,14 +80,17 @@ class MainActivity : AppCompatActivity() {
                 .show()
             return
         }
+        val printer = BrotherPrinter.getInstance(barcodeCode.text.toString())
+        progressBar.visibility = View.VISIBLE
         Single.fromCallable {
-            BrotherPrinter.getInstance(barcodeCode.text.toString())
-                .print(this, selectedPrinterMacAddress!!)
+            printer.print(this, selectedPrinterMacAddress!!)
         }
             .subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe(
                 {
+                    logOutput.text = printer.readLog()
+                    progressBar.visibility = View.GONE
                     Toast.makeText(
                         this,
                         "Print was successful : $it",
@@ -88,6 +99,8 @@ class MainActivity : AppCompatActivity() {
                         .show()
                 },
                 {
+                    logOutput.text = printer.readLog()
+                    progressBar.visibility = View.GONE
                     Toast.makeText(this, "Failed to print.$it", Toast.LENGTH_LONG)
                         .show()
                 })

@@ -1,9 +1,11 @@
 package com.route4me.printer
 
+import android.annotation.SuppressLint
 import android.bluetooth.BluetoothAdapter
 import android.content.Context
 import android.content.ContextWrapper
 import android.graphics.Bitmap
+import android.os.Environment
 import android.util.Log
 import com.brother.ptouch.sdk.Printer
 import com.brother.ptouch.sdk.PrinterInfo
@@ -13,6 +15,7 @@ import com.google.zxing.WriterException
 import com.journeyapps.barcodescanner.BarcodeEncoder
 import com.route4me.printer.model.SingletonHolder
 import java.io.*
+import java.text.SimpleDateFormat
 import java.util.*
 
 
@@ -61,6 +64,32 @@ class BrotherPrinter(private val barcodeValue: String) {
         } finally {
             printer.endCommunication()
         }
+    }
+
+    @SuppressLint("SimpleDateFormat")
+    fun readLog(): String {
+        val simpleDateFormat = SimpleDateFormat("yyyyMMdd")
+        val file = File(
+            Environment.getExternalStorageDirectory().path + "/Brother" + File.separator + "CM" + simpleDateFormat.format(
+                Date()
+            ) + ".txt"
+        )
+        //Read text from file
+        //Read text from file
+        val text = StringBuilder()
+
+        try {
+            val br = BufferedReader(FileReader(file))
+            var line: String?
+            while (br.readLine().also { line = it } != null) {
+                text.append(line)
+                text.append('\n')
+            }
+            br.close()
+        } catch (e: IOException) {
+            Log.e(TAG, "Error while trying to read log file.", e)
+        }
+        return text.toString()
     }
 
     private fun generateBarcodeBitmap(input: String): Bitmap? {
