@@ -2,19 +2,25 @@ package com.route4me.printer
 
 import android.os.Looper
 import android.util.Log
-import com.route4me.printer.model.SingletonHolder
+import com.route4me.printer.model.RoutePrinter
 import com.zebra.sdk.comm.BluetoothConnectionInsecure
 import com.zebra.sdk.comm.Connection
 
 private const val TAG = "ZebraPrinter"
 
-class ZebraPrinter(private val barcodeStr: String) {
+class ZebraPrinter private constructor() : RoutePrinter {
 
-    companion object : SingletonHolder<ZebraPrinter, String>({
-        ZebraPrinter(it)
-    })
+    companion object {
+        @Volatile
+        private var instance: ZebraPrinter? = null
 
-    fun print(macAddress: String): Boolean {
+        fun getInstance(): ZebraPrinter =
+            instance ?: synchronized(this) {
+                instance ?: ZebraPrinter().also { instance = it }
+            }
+    }
+
+    override fun print(barcodeValue: String, macAddress: String): Boolean {
         try { // Instantiate insecure connection for given Bluetooth&reg; MAC Address.
             val thePrinterConn: Connection = BluetoothConnectionInsecure(macAddress)
             // Initialize
@@ -24,7 +30,7 @@ class ZebraPrinter(private val barcodeStr: String) {
             // Open the connection - physical connection is established here.
             thePrinterConn.open()
             // This example prints barcode near the top of the label.
-            val zplData = "^FD$barcodeStr^FS"
+            val zplData = "^FD$barcodeValue^FS"
             // Send the data to printer as a byte array.
             thePrinterConn.write(zplData.toByteArray(charset("UTF-8")))
             // Make sure the data got to the printer before closing the connection

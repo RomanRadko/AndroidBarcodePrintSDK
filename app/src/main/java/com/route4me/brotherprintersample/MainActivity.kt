@@ -14,7 +14,9 @@ import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import com.route4me.printer.BrotherPrinter
+import com.route4me.printer.CitizenPrinter
 import com.route4me.printer.ZebraPrinter
+import com.route4me.printer.model.PrinterType
 import io.reactivex.Single
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
@@ -34,8 +36,9 @@ class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
-        testBrotherBtn.setOnClickListener { printBrother() }
-        testZebraBtn.setOnClickListener { printZebra() }
+        testBrotherBtn.setOnClickListener { print(PrinterType.BROTHER) }
+        testZebraBtn.setOnClickListener { print(PrinterType.ZEBRA) }
+        testCitizenBtn.setOnClickListener { print(PrinterType.CITIZEN) }
         connectDeviceBtn.setOnClickListener {
             startActivity(
                 Intent(
@@ -76,20 +79,27 @@ class MainActivity : AppCompatActivity() {
         }
 
     @SuppressLint("CheckResult")
-    private fun printZebra() {
+    private fun print(printerType: PrinterType) {
         if (selectedPrinterMacAddress.isNullOrBlank()) {
             Toast.makeText(this, "No BT Printers are selected.", Toast.LENGTH_LONG)
                 .show()
             return
         }
         progressBar.visibility = View.VISIBLE
+        val printer = when (printerType) {
+            PrinterType.BROTHER -> BrotherPrinter.getInstance(this)
+            PrinterType.ZEBRA -> ZebraPrinter.getInstance()
+            PrinterType.CITIZEN -> CitizenPrinter.getInstance()
+        }
         Single.fromCallable {
-            ZebraPrinter.getInstance(barcodeCode.text.toString()).print(selectedPrinterMacAddress!!)
+            printer.print(barcodeCode.text.toString(), selectedPrinterMacAddress!!)
         }
             .subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe(
                 {
+                    if (printerType == PrinterType.BROTHER) logOutput.text =
+                        (printer as BrotherPrinter).readLog()
                     progressBar.visibility = View.GONE
                     Toast.makeText(
                         this,
@@ -99,39 +109,8 @@ class MainActivity : AppCompatActivity() {
                         .show()
                 },
                 {
-                    progressBar.visibility = View.GONE
-                    Toast.makeText(this, "Failed to print.$it", Toast.LENGTH_LONG)
-                        .show()
-                })
-    }
-
-    @SuppressLint("CheckResult")
-    private fun printBrother() {
-        if (selectedPrinterMacAddress.isNullOrBlank()) {
-            Toast.makeText(this, "No BT Printers are selected.", Toast.LENGTH_LONG)
-                .show()
-            return
-        }
-        val printer = BrotherPrinter.getInstance(barcodeCode.text.toString())
-        progressBar.visibility = View.VISIBLE
-        Single.fromCallable {
-            printer.print(this, selectedPrinterMacAddress!!)
-        }
-            .subscribeOn(Schedulers.io())
-            .observeOn(AndroidSchedulers.mainThread())
-            .subscribe(
-                {
-                    logOutput.text = printer.readLog()
-                    progressBar.visibility = View.GONE
-                    Toast.makeText(
-                        this,
-                        "Print was successful : $it",
-                        Toast.LENGTH_LONG
-                    )
-                        .show()
-                },
-                {
-                    logOutput.text = printer.readLog()
+                    if (printerType == PrinterType.BROTHER) logOutput.text =
+                        (printer as BrotherPrinter).readLog()
                     progressBar.visibility = View.GONE
                     Toast.makeText(this, "Failed to print.$it", Toast.LENGTH_LONG)
                         .show()

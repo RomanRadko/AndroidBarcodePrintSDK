@@ -13,6 +13,7 @@ import com.google.zxing.BarcodeFormat
 import com.google.zxing.MultiFormatWriter
 import com.google.zxing.WriterException
 import com.journeyapps.barcodescanner.BarcodeEncoder
+import com.route4me.printer.model.RoutePrinter
 import com.route4me.printer.model.SingletonHolder
 import java.io.*
 import java.text.SimpleDateFormat
@@ -21,13 +22,13 @@ import java.util.*
 
 private const val TAG = "BrotherPrinter"
 
-class BrotherPrinter(private val barcodeValue: String) {
+class BrotherPrinter(private val context: Context) : RoutePrinter {
 
-    companion object : SingletonHolder<BrotherPrinter, String>({
+    companion object : SingletonHolder<BrotherPrinter, Context>({
         BrotherPrinter(it)
     })
 
-    fun print(context: Context, macAddress: String): Boolean {
+    override fun print(barcode: String, macAddress: String): Boolean {
         var paperInfoFile: File
         // define printer and printer setting information
         val printer = Printer().apply {
@@ -57,7 +58,7 @@ class BrotherPrinter(private val barcodeValue: String) {
             //print
             printer.startCommunication()
             // Brother SDK accepts bitmap as input so barcode to bitmap conversion should be performed
-            val bitmap = generateBarcodeBitmap(barcodeValue) ?: return false
+            val bitmap = generateBarcodeBitmap(barcode) ?: return false
             val status = printer.printImage(bitmap)
             paperInfoFile.delete()
             return status.errorCode == PrinterInfo.ErrorCode.ERROR_NONE
@@ -74,7 +75,6 @@ class BrotherPrinter(private val barcodeValue: String) {
                 Date()
             ) + ".txt"
         )
-        //Read text from file
         //Read text from file
         val text = StringBuilder()
 
