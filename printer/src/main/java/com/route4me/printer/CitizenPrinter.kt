@@ -2,6 +2,7 @@ package com.route4me.printer
 
 import com.citizen.sdk.ESCPOSConst
 import com.citizen.sdk.ESCPOSPrinter
+import com.route4me.printer.model.PrintStatus
 import com.route4me.printer.model.RoutePrinter
 
 class CitizenPrinter private constructor() : RoutePrinter {
@@ -16,7 +17,7 @@ class CitizenPrinter private constructor() : RoutePrinter {
             }
     }
 
-    override fun print(barcode: String, macAddress: String): Boolean {
+    override fun print(barcode: String, macAddress: String): PrintStatus {
         val posPtr = ESCPOSPrinter()
         // Connect
         var result: Int = posPtr.connect(
@@ -41,9 +42,9 @@ class CitizenPrinter private constructor() : RoutePrinter {
             result = posPtr.transactionPrint(ESCPOSConst.CMP_TP_NORMAL)
             // Disconnect
             posPtr.disconnect()
-            return ESCPOSConst.CMP_SUCCESS != result
+            return PrintStatus(ESCPOSConst.CMP_SUCCESS != result, "CMP code $result")
         } else { // Connect Error
-            return false
+            return PrintStatus(false, "BT connection was failed.")
         }
     }
 }

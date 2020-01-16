@@ -2,6 +2,7 @@ package com.route4me.printer
 
 import android.os.Looper
 import android.util.Log
+import com.route4me.printer.model.PrintStatus
 import com.route4me.printer.model.RoutePrinter
 import com.zebra.sdk.comm.BluetoothConnectionInsecure
 import com.zebra.sdk.comm.Connection
@@ -20,7 +21,7 @@ class ZebraPrinter private constructor() : RoutePrinter {
             }
     }
 
-    override fun print(barcodeValue: String, macAddress: String): Boolean {
+    override fun print(barcode: String, macAddress: String): PrintStatus {
         try { // Instantiate insecure connection for given Bluetooth&reg; MAC Address.
             val thePrinterConn: Connection = BluetoothConnectionInsecure(macAddress)
             // Initialize
@@ -30,7 +31,7 @@ class ZebraPrinter private constructor() : RoutePrinter {
             // Open the connection - physical connection is established here.
             thePrinterConn.open()
             // This example prints barcode near the top of the label.
-            val zplData = "^FD$barcodeValue^FS"
+            val zplData = "^FD$barcode^FS"
             // Send the data to printer as a byte array.
             thePrinterConn.write(zplData.toByteArray(charset("UTF-8")))
             // Make sure the data got to the printer before closing the connection
@@ -38,10 +39,10 @@ class ZebraPrinter private constructor() : RoutePrinter {
             // Close the insecure connection to release resources.
             thePrinterConn.close()
             Looper.myLooper()!!.quit()
-            return true
+            return PrintStatus(true, "")
         } catch (e: Exception) { // Handle communications error here.
             Log.e(TAG, "Error has been occurred while trying to print on Zebra.")
-            return false
+            return PrintStatus(false, "")
         }
     }
 

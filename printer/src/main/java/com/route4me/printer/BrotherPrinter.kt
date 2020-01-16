@@ -13,6 +13,7 @@ import com.google.zxing.BarcodeFormat
 import com.google.zxing.MultiFormatWriter
 import com.google.zxing.WriterException
 import com.journeyapps.barcodescanner.BarcodeEncoder
+import com.route4me.printer.model.PrintStatus
 import com.route4me.printer.model.RoutePrinter
 import com.route4me.printer.model.SingletonHolder
 import java.io.*
@@ -28,7 +29,7 @@ class BrotherPrinter(private val context: Context) : RoutePrinter {
         BrotherPrinter(it)
     })
 
-    override fun print(barcode: String, macAddress: String): Boolean {
+    override fun print(barcode: String, macAddress: String): PrintStatus {
         var paperInfoFile: File
         // define printer and printer setting information
         val printer = Printer().apply {
@@ -58,10 +59,10 @@ class BrotherPrinter(private val context: Context) : RoutePrinter {
             //print
             printer.startCommunication()
             // Brother SDK accepts bitmap as input so barcode to bitmap conversion should be performed
-            val bitmap = generateBarcodeBitmap(barcode) ?: return false
+            val bitmap = generateBarcodeBitmap(barcode) ?: return PrintStatus(false, "Failed to generate barcode bitmap.")
             val status = printer.printImage(bitmap)
             paperInfoFile.delete()
-            return status.errorCode == PrinterInfo.ErrorCode.ERROR_NONE
+            return PrintStatus(status.errorCode == PrinterInfo.ErrorCode.ERROR_NONE, status.errorCode.name)
         } finally {
             printer.endCommunication()
         }
