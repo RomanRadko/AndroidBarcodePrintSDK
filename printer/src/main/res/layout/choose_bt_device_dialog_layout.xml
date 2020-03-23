@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/dialog_border"
+    android:orientation="vertical">
+
+    <com.route4me.printer.view.BaseTextView
+        android:layout_width="match_parent"
+        android:gravity="center"
+        android:layout_height="40dp"
+        android:text="@string/connect_to"
+        android:background="@color/primaryDark"
+        android:textColor="@android:color/white"
+        android:textSize="18sp" />
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/devicesList"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
+
+</LinearLayout>

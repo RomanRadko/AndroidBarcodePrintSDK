@@ -16,6 +16,7 @@ import com.journeyapps.barcodescanner.BarcodeEncoder
 import com.route4me.printer.model.PrintStatus
 import com.route4me.printer.model.RoutePrinter
 import com.route4me.printer.model.SingletonHolder
+import com.route4me.printer.model.status.BrotherStatus
 import java.io.*
 import java.text.SimpleDateFormat
 import java.util.*
@@ -34,14 +35,14 @@ class BrotherPrinter(private val context: Context) : RoutePrinter {
         // define printer and printer setting information
         val printer = Printer().apply {
             printerInfo = PrinterInfo().apply {
-                printerModel = PrinterInfo.Model.RJ_3150
+                printerModel = PrinterInfo.Model.RJ_4030
                 port = PrinterInfo.Port.BLUETOOTH
                 val wrapper = ContextWrapper(context)
                 paperInfoFile = wrapper.getDir("PaperData", Context.MODE_PRIVATE)
                 paperInfoFile = File(paperInfoFile, "${UUID.randomUUID()}.bin")
                 val inputStream: InputStream = context.resources.openRawResource(
                     context.resources.getIdentifier(
-                        "rj3150_76mm",
+                        "rj4030_102mm",
                         "raw", context.packageName
                     )
                 )
@@ -62,7 +63,8 @@ class BrotherPrinter(private val context: Context) : RoutePrinter {
             val bitmap = generateBarcodeBitmap(barcode) ?: return PrintStatus(false, "Failed to generate barcode bitmap.")
             val status = printer.printImage(bitmap)
             paperInfoFile.delete()
-            return PrintStatus(status.errorCode == PrinterInfo.ErrorCode.ERROR_NONE, status.errorCode.name)
+            return PrintStatus(status.errorCode == PrinterInfo.ErrorCode.ERROR_NONE,
+                BrotherStatus(status.errorCode).getMessage())
         } finally {
             printer.endCommunication()
         }

@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@drawable/dialog_border"
+    android:orientation="vertical">
+
+    <com.route4me.printer.view.BaseTextView
+        android:layout_width="match_parent"
+        android:gravity="center"
+        android:layout_height="30dp"
+        android:paddingStart="20dp"
+        android:paddingEnd="20dp"
+        android:text="@string/choose_manufacturer"
+        android:background="@color/primaryDark"
+        android:textColor="@android:color/white"
+        android:textSize="18sp" />
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/manufacturerList"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
+
+</LinearLayout>

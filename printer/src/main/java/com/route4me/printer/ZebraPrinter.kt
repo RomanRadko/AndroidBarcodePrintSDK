@@ -31,7 +31,13 @@ class ZebraPrinter private constructor() : RoutePrinter {
             // Open the connection - physical connection is established here.
             thePrinterConn.open()
             // This example prints barcode near the top of the label.
-            val zplData = "^FD$barcode^FS"
+            /*
+            * ^XA
+              ^BY5,2,270
+              ^FO100,50^BC^FD12345678^FS
+              ^XZ
+            * */
+            val zplData = "^XA\n^BY5,2,270\n^FO100,50^BC^$barcode^FS\n^XZ"
             // Send the data to printer as a byte array.
             thePrinterConn.write(zplData.toByteArray(charset("UTF-8")))
             // Make sure the data got to the printer before closing the connection
@@ -39,10 +45,10 @@ class ZebraPrinter private constructor() : RoutePrinter {
             // Close the insecure connection to release resources.
             thePrinterConn.close()
             Looper.myLooper()!!.quit()
-            return PrintStatus(true, "")
-        } catch (e: Exception) { // Handle communications error here.
-            Log.e(TAG, "Error has been occurred while trying to print on Zebra.")
-            return PrintStatus(false, "")
+            return PrintStatus(true, "Print was successful.")
+        } catch (exception: Exception) { // Handle communications error here.
+            Log.e(TAG, "Error has been occurred while trying to print on Zebra.", exception)
+            return PrintStatus(false, "Print was failed with error: ${exception.message}")
         }
     }
 

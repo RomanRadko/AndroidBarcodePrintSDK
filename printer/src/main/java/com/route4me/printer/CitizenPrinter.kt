@@ -4,6 +4,7 @@ import com.citizen.sdk.ESCPOSConst
 import com.citizen.sdk.ESCPOSPrinter
 import com.route4me.printer.model.PrintStatus
 import com.route4me.printer.model.RoutePrinter
+import com.route4me.printer.model.status.CitizenStatus
 
 class CitizenPrinter private constructor() : RoutePrinter {
 
@@ -42,7 +43,7 @@ class CitizenPrinter private constructor() : RoutePrinter {
             result = posPtr.transactionPrint(ESCPOSConst.CMP_TP_NORMAL)
             // Disconnect
             posPtr.disconnect()
-            return PrintStatus(ESCPOSConst.CMP_SUCCESS != result, "CMP code $result")
+            return PrintStatus(ESCPOSConst.CMP_SUCCESS != result, CitizenStatus(result).getMessage())
         } else { // Connect Error
             return PrintStatus(false, "BT connection was failed.")
         }
