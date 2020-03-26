@@ -11,12 +11,14 @@ This module is aimed for printing barcode on the next mobile printers:
 
 <p align="center">
 <img src ="https://user-images.githubusercontent.com/4493267/77412195-39450c00-6dc6-11ea-95e4-4ef8f3be9176.jpg" width="300" height="500">
+<img src ="https://user-images.githubusercontent.com/4493267/77632847-3f1e2700-6f57-11ea-8182-d5b31e748ebe.png" width="300" height="500">       
 </p>
 
 <p align="center">
 <img src="https://user-images.githubusercontent.com/4493267/77412336-6abdd780-6dc6-11ea-90e7-5811d0d39ec4.png" width="200" height="400">
 <img src="https://user-images.githubusercontent.com/4493267/77412527-a9ec2880-6dc6-11ea-9cd4-c9524226863d.png" width="200" height="400">
 <img src="https://user-images.githubusercontent.com/4493267/77412574-ba9c9e80-6dc6-11ea-88f4-3ce24d07e264.png" width="200" height="400">
+<img src="https://user-images.githubusercontent.com/4493267/77632842-3cbbcd00-6f57-11ea-9350-aa0be0ee22b7.png" width="200" height="400">
 <img src="https://user-images.githubusercontent.com/4493267/77412420-87f2a600-6dc6-11ea-8a76-e04392028e84.png" width="200" height="400">
 </p>
 
