@@ -1,2 +1,2 @@
-include ':app', ':printer', ':BrotherPrintLibrary', ':ZebraPrinterLibrary'
-rootProject.name='BrotherPrinterSample'
+include ':app', ':printer'
+rootProject.name = 'MobilePrintSDK'

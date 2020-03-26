@@ -7,7 +7,7 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content">
 
-    <com.route4me.printer.view.BaseTextView
+    <com.radko.printer.view.BaseTextView
         android:id="@+id/name"
         android:layout_width="match_parent"
         android:layout_height="60dp"
@@ -15,7 +15,7 @@
         android:textColor="@color/primaryDark"
         android:textSize="20sp" />
 
-    <com.route4me.printer.view.BaseTextView
+    <com.radko.printer.view.BaseTextView
         android:id="@+id/mac"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"

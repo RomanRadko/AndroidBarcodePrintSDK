@@ -10,7 +10,7 @@
         android:background="@color/primaryBg"
         android:orientation="vertical">
 
-        <com.route4me.printer.view.BarcodeView
+        <com.radko.printer.view.BarcodeView
             android:id="@+id/barcodeView"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -18,7 +18,7 @@
             android:layout_marginTop="10dp"
             android:padding="20dp" />
 
-        <com.route4me.printer.view.BaseTextView
+        <com.radko.printer.view.BaseTextView
             android:id="@+id/connectBtn"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -32,7 +32,7 @@
             android:textColor="@android:color/white"
             android:textSize="20sp" />
 
-        <com.route4me.printer.view.ConnectionStatusView
+        <com.radko.printer.view.ConnectionStatusView
             android:id="@+id/connectivityStatusView"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -40,7 +40,7 @@
             android:padding="20dp"
             android:visibility="gone" />
 
-        <com.route4me.printer.view.BaseTextView
+        <com.radko.printer.view.BaseTextView
             android:id="@+id/printBtn"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"

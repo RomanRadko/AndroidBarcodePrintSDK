@@ -12,12 +12,21 @@
         android:layout_gravity="center"
         android:paddingTop="10dp" />
 
-    <com.route4me.printer.view.BaseTextView
+    <com.radko.printer.view.BaseTextView
         android:id="@+id/value"
         android:layout_width="match_parent"
         android:layout_height="50dp"
         android:gravity="center"
         android:textColor="@android:color/black"
         android:textSize="18sp" />
+
+    <ImageView
+        android:id="@+id/logo"
+        android:layout_width="220dp"
+        android:layout_height="65dp"
+        android:layout_gravity="center"
+        android:paddingTop="10dp"
+        android:src="@drawable/logo"
+        android:visibility="gone" />
 
 </LinearLayout>

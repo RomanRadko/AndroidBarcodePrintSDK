@@ -5,7 +5,7 @@
     android:background="@drawable/dialog_border"
     android:orientation="vertical">
 
-    <com.route4me.printer.view.BaseTextView
+    <com.radko.printer.view.BaseTextView
         android:layout_width="match_parent"
         android:gravity="center"
         android:layout_height="40dp"
